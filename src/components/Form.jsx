@@ -148,7 +148,11 @@ const Form = () => {
             {messageError && <p>{messageError}</p>}
           </div>
 
+          <div>
           <button type="submit">Send</button>
+          </div>
+
+         
         </form>
       </div>
     );
