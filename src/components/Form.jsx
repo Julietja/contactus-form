@@ -108,7 +108,7 @@ const Form = () => {
       <p className='success-message'>
       Thank you for contacting us! We will be in touch with you soon.</p>
     }
-    {submitError && <p>{submitError}</p>}
+    {submitError && <p className="error-message">{submitError}</p>}
 
         <form onSubmit={handleSubmit}>
           <div>
