@@ -19,7 +19,7 @@ body{
 
 form{
   background-color: aqua;
-  padding: 20px;
+  padding: 20px 10px;
   width: 100%;
   margin: 30px auto;
   display: flex;
@@ -34,15 +34,15 @@ form div{
   min-width: 300px;
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: space-around;
   align-items: center;
-  font-size: 18px;
+  font-size: 14px;
 }
 
 input, textarea{
-  width: 82%;
-  max-width: 300px;
-  min-width: 250px;
+  width: 88%;
+  max-width: 350px;
+  min-width: 200px;
 outline: none;
   padding: 10px;
   border: none;
@@ -69,11 +69,15 @@ font-weight: 600;
   
   form{
   max-width: 600px;
-  padding-left: 0;
   }
 
   form div{
    max-width: 650px;
+   font-size: 18px;
+}
+input, textarea{
+  max-width: 90%;
+  font-size: 18px;
 }
 }
 
