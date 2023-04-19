@@ -13,7 +13,6 @@ const Form = () => {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState(false);
 
-
   //Define the validateEmail function:
   const validateEmail = (email) => {
     const re = /\S+@\S+\.\S+/;
@@ -26,6 +25,11 @@ const Form = () => {
     //Prevent the default form submission behavior, so as to set conditions to be validated before submission
     event.preventDefault();
 
+    setName("");
+    setEmail("");
+    setMessage("");
+    setSubmitSuccess(false);
+    setSubmitError(false);
 
     //set conditions for checking each of the input fields to make sure they have valid values. If any field is empty or invalid, the appropriate error message is set in the state.
 
@@ -67,91 +71,88 @@ const Form = () => {
 
         setSubmitSuccess(true);
         //Reset state variables for each form field to empty string
+      } catch (error) {
+        setSubmitError(true);
+      } finally {
+        setLoading("Send");
+      }
+    }
+  };
+
+  //Use useEffect code to clear the form and success message after 30 seconds:
+  useEffect(() => {
+    let resetForm = null;
+    if (submitSuccess) {
+      resetForm = setTimeout(() => {
+        setSubmitSuccess(false);
         setName("");
         setEmail("");
         setMessage("");
-      } catch {
-        setSubmitError(false);
-        } finally {
-      setLoading('Send')
-        }
-        }
-      }
+      }, 30000);
+      return () => clearTimeout(resetForm);
+    }
+  }, [submitSuccess]);
 
-    //Use useEffect code to clear the form and success message after 6 seconds:
-    useEffect(() => {
-      let resetForm = null;
-      if (submitSuccess) {
-        resetForm = setTimeout(() => {
-          setSubmitSuccess(false);
-          setSubmitError(false);
-          setName("");
-          setEmail("");
-          setMessage("");
-        }, 6000);
-        return () => clearTimeout(resetForm);
-      }
-    }, [submitSuccess]);
+  //Define the JSX for the form
 
+  return (
+    <div>
+      {submitSuccess && !messageError && !emailError && !nameError && (
+        <p className="success-message">
+          Thank you for contacting us! We will be in touch with you soon.
+        </p>
+      )}
+      {submitError && (
+        <p>
+          Submission failed! Please fill out all required fields correctly and
+          try again.
+        </p>
+      )}
 
-    //Define the JSX for the form
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="name">Name:</label>
+          <input
+            type="text"
+            id="name"
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+          />
+          {nameError && <p>{nameError}</p>}
+        </div>
 
-    return (
-      <div>
-         {submitSuccess && !messageError && !emailError && !nameError &&
-      <p className='success-message'>
-      Thank you for contacting us! We will be in touch with you soon.</p>
-  }
-    {submitError && messageError && emailError && nameError && <p className="error-message">Submission failed! Please fill out all required fields correctly and try again.</p>}
+        <div>
+          <label htmlFor="email">Email:</label>
+          <input
+            type="email"
+            id="email"
+            value={email}
+            onChange={(event) => setEmail(event.target.value)}
+          />
+          {emailError && <p>{emailError}</p>}
+        </div>
 
-        <form onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="name">Name:</label>
-            <input
-              type="text"
-              id="name"
-              value={name}
-              onChange={(event) => setName(event.target.value)}
-            />
-            {nameError && <p>{nameError}</p>}
-          </div>
+        <div>
+          <label htmlFor="subject">Subject:</label>
+          <input type="text" id="subject"></input>
+        </div>
 
-          <div>
-            <label htmlFor="email">Email:</label>
-            <input
-              type="email"
-              id="email"
-              value={email}
-              onChange={(event) => setEmail(event.target.value)}
-            />
-            {emailError && <p>{emailError}</p>}
-          </div>
+        <div>
+          <label htmlFor="message">Message:</label>
+          <textarea
+            id="message"
+            value={message}
+            onChange={(event) => setMessage(event.target.value)}
+          ></textarea>
+          {messageError && <p>{messageError}</p>}
+        </div>
 
-          <div>
-            <label htmlFor="subject">Subject:</label>
-            <input type="text" id="subject"></input>
-          </div>
-
-          <div>
-            <label htmlFor="message">Message:</label>
-            <textarea
-              id="message"
-              value={message}
-              onChange={(event) => setMessage(event.target.value)}
-            ></textarea>
-            {messageError && <p>{messageError}</p>}
-          </div>
-
-          <div>
+        <div>
           <button type="submit">{loading}</button>
-          </div>
-
-         
-        </form>
-      </div>
-    );
-   
-  }
-
+        </div>
+      </form>
+    </div>
+  );
+};
 
 export default Form;
