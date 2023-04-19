@@ -9,9 +9,10 @@ const Form = () => {
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
   const [messageError, setMessageError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState("Send");
   const [submitSuccess, setSubmitSuccess] = useState(false);
-  const [submitError, setSubmitError] = useState("");
+  const [submitError, setSubmitError] = useState(false);
+
 
   //Define the validateEmail function:
   const validateEmail = (email) => {
@@ -25,12 +26,6 @@ const Form = () => {
     //Prevent the default form submission behavior, so as to set conditions to be validated before submission
     event.preventDefault();
 
-    //Reset the error messages and submitSuccess state variables to their default values.
-    setNameError("");
-    setEmailError("");
-    setMessageError("");
-    setSubmitSuccess(false);
-    
 
     //set conditions for checking each of the input fields to make sure they have valid values. If any field is empty or invalid, the appropriate error message is set in the state.
 
@@ -51,7 +46,7 @@ const Form = () => {
     //Set condition for when no error is detected (all fields are valid)
     if (nameError === "" && emailError === "" && messageError === "") {
       try {
-        setLoading(true);
+        setLoading("Sending message...");
         await fetch(
           "https://my-json-server.typicode.com/tundeojediran/contacts-api-server/inquiries",
           {
@@ -75,26 +70,25 @@ const Form = () => {
         setName("");
         setEmail("");
         setMessage("");
-      } catch (error) {
-        setSubmitError(
-          "Submission failed! Please fill out all required fields correctly and try again."
-        );
-      } finally {
-      setLoading(false);
-    }
-  }
-}
+      } catch {
+        setSubmitError(false);
+        } finally {
+      setLoading('Send')
+        }
+        }
+      }
 
-    //Use useEffect code to clear the form and success message after 3 seconds:
+    //Use useEffect code to clear the form and success message after 6 seconds:
     useEffect(() => {
       let resetForm = null;
       if (submitSuccess) {
         resetForm = setTimeout(() => {
           setSubmitSuccess(false);
+          setSubmitError(false);
           setName("");
           setEmail("");
           setMessage("");
-        }, 3000);
+        }, 6000);
         return () => clearTimeout(resetForm);
       }
     }, [submitSuccess]);
@@ -104,11 +98,11 @@ const Form = () => {
 
     return (
       <div>
-         {submitSuccess &&
+         {submitSuccess && !messageError && !emailError && !nameError &&
       <p className='success-message'>
       Thank you for contacting us! We will be in touch with you soon.</p>
-    }
-    {submitError && <p className="error-message">{submitError}</p>}
+  }
+    {submitError && messageError && emailError && nameError && <p className="error-message">Submission failed! Please fill out all required fields correctly and try again.</p>}
 
         <form onSubmit={handleSubmit}>
           <div>
@@ -149,7 +143,7 @@ const Form = () => {
           </div>
 
           <div>
-          <button type="submit">Send</button>
+          <button type="submit">{loading}</button>
           </div>
 
          
@@ -157,7 +151,7 @@ const Form = () => {
       </div>
     );
    
-  };
+  }
 
 
 export default Form;
